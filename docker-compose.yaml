@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  elasticsearch_exporter:
+      image: quay.io/prometheuscommunity/elasticsearch-exporter:latest
+      command:
+              - '--es.uri=http://elastic:changeme@localhost:9200'
+      restart: always
+      ports:
+      - "127.0.0.1:9114:9114"
+    # Collector
+  otel-collector:
+      network_mode: "host"
+      image: otel/opentelemetry-collector-contrib-dev:latest
+      command: ["--config=/etc/otel-collector-config.yaml"]
+      volumes:
+        - ./otel-collector-config.yml:/etc/otel-collector-config.yaml
+#      ports:
+#        - "1888:1888"   # pprof extension
+#        - "8888:8888"   # Prometheus metrics exposed by the collector
+#        - "8889:8889"   # Prometheus exporter metrics
